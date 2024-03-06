@@ -9,15 +9,23 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>eliranh</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>three_layers_security</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>three_layers_security</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
-		<vaadin.version>24.3.3</vaadin.version>
+		<vaadin.version>24.3.5</vaadin.version>
 	</properties>
 	<dependencies>
+	
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20240303</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
