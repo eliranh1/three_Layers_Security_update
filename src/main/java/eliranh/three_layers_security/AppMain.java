@@ -9,9 +9,10 @@ import com.vaadin.flow.component.page.Push;
 @SpringBootApplication @Push
 public class AppMain implements AppShellConfigurator{
 
+	// uploaded....
 	public static void main(String[] args) { 
 		SpringApplication.run(AppMain.class, args);
 	}
-
+	
 }
- 
+	
