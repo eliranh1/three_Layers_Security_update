@@ -1,5 +1,6 @@
 package eliranh.three_layers_security.Classes;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,10 +15,11 @@ public class Article
     private String fileType;
     private Key key;
     private int contentLength;
-    private Date date;
+    private LocalDate date;
     private int classLevel;
+    private boolean allowEdit;
 
-    public Article(byte[] projectData, String projectName, String fileType, Key key, int contentLength, Date date)
+    public Article(byte[] projectData, String projectName, String fileType, Key key, int contentLength, LocalDate date)
     {
        this.data = projectData;
        this.name = projectName;
@@ -25,6 +27,7 @@ public class Article
        this.key = key;
        this.contentLength = contentLength;
        this.date = date;
+       this.allowEdit = allowEdit;
     }
 
     public Article()
@@ -33,6 +36,19 @@ public class Article
     }
 
     
+    
+    public int getClassLevel() {
+        return classLevel;
+    }
+
+    public boolean isAllowEdit() {
+        return allowEdit;
+    }
+
+    public void setAllowEdit(boolean allowEdit) {
+        this.allowEdit = allowEdit;
+    }
+
     public void setClassLevel(int classLevel) {
         this.classLevel = classLevel;
     }
@@ -45,7 +61,7 @@ public class Article
         return author;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

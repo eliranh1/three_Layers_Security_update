@@ -36,18 +36,18 @@ public class UsersPage extends VerticalLayout
 
     public UsersPage(UserService userService) throws IOException
     {
-        this.userService = userService;
+        this.userService = userService;  
         this.upperLayout = new HorizontalLayout();
         upperLayout.setSizeFull();
         upperLayout.getStyle().setBackgroundColor("lightblue");
         upperLayout.setAlignItems(Alignment.BASELINE);
-        this.title = new H1("Welcome "+VaadinSession.getCurrent().getSession().getAttribute("name")+" !");
+        this.title = new H1("Welcome "+getAttribute("name")+" !");
         title.setSizeFull();
-        upperLayout.add(new Avatar("Avatar",(String)VaadinSession.getCurrent().getSession().getAttribute("avatar")),title);
+        upperLayout.add(new Avatar("Avatar",(String)getAttribute("avatar")),title);
         this.navigateBar = new HorizontalLayout();
         Button homeBtn = new Button("Home",VaadinIcon.HOME.create(),event->{UI.getCurrent().navigate(HomePage.class);});
 
-//        userService.generatePassword();
+        userService.generatePassword();
 
         Button logOutBtn = new Button("Logout",VaadinIcon.SIGN_OUT.create());
         logOutBtn.getStyle().setBackgroundColor("red");
@@ -66,7 +66,7 @@ public class UsersPage extends VerticalLayout
         usersGrid.addColumn(createEmployeeRenderer()).setHeader("Name");
         usersGrid.addColumn(User::getId).setHeader("Id");
         usersGrid.addColumn(User::getClassLevel).setHeader("Classification level");
-        if(userService.findUserById((Long)VaadinSession.getCurrent().getSession().getAttribute("id")).isAdmin())
+        if(userService.findUserById((Long)getAttribute("id")).isAdmin())
         {
             usersGrid.addComponentColumn(user -> {
                 if(!user.isAdmin())
@@ -123,19 +123,35 @@ public class UsersPage extends VerticalLayout
                     saveBtn.getStyle().setBackgroundColor("blue");
                     saveBtn.getStyle().setColor("white");
                     saveBtn.addDoubleClickListener(event->{
-                        if(doAdmin.getValue() == true)
+                        if(classLevelField.isEmpty()||passwordField.isEmpty())
                         {
-                            User user = new User(Long.parseLong(idField.getValue()),nameField.getValue(),passwordField.getValue(),Integer.parseInt(classLevelField.getValue()),true);
-                            userService.updateUser(user);
-                            usersGrid.setItems(userService.findAllUsers());
-                            dialog.close();
+                            Notification.show("One or more fields are empty",5000,Position.MIDDLE);
                         }
                         else
                         {
-                            User user = new User(Long.parseLong(idField.getValue()),nameField.getValue(),passwordField.getValue(),Integer.parseInt(classLevelField.getValue()),false);
-                            userService.updateUser(user);
-                            usersGrid.setItems(userService.findAllUsers());
-                            dialog.close();
+                            int classLevel = Integer.parseInt(classLevelField.getValue());
+                            if(classLevel < 1 || classLevel > 3)
+                            {
+                                classLevelField.setInvalid(true);
+                                classLevelField.setErrorMessage("invalid classification level");
+                            }
+                            else
+                            {
+                                if(doAdmin.getValue() == true)
+                                {
+                                   User user = new User(Long.parseLong(idField.getValue()),nameField.getValue(),passwordField.getValue(),Integer.parseInt(classLevelField.getValue()),true);
+                                   userService.updateUser(user);
+                                   usersGrid.setItems(userService.findAllUsers());
+                                   dialog.close();
+                                }
+                                else
+                                { 
+                                   User user = new User(Long.parseLong(idField.getValue()),nameField.getValue(),passwordField.getValue(),Integer.parseInt(classLevelField.getValue()),false);
+                                   userService.updateUser(user);
+                                   usersGrid.setItems(userService.findAllUsers());
+                                   dialog.close();
+                                }
+                            }
                         }
                     });
 
@@ -252,4 +268,9 @@ public class UsersPage extends VerticalLayout
             .withProperty("pictureUrl", User::getAvatarPath)
             .withProperty("fullName", User::getName);
     }
+
+    private Object getAttribute(String name)
+   {
+    return VaadinSession.getCurrent().getAttribute(name);
+   }
 }

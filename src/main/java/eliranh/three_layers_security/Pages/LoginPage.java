@@ -57,10 +57,11 @@ public class LoginPage extends HorizontalLayout
           User user = userService.findUserById(id);
           if(user.getPassword().equals(e.getPassword()))
           {
-            VaadinSession.getCurrent().getSession().setAttribute("id",id);
-            VaadinSession.getCurrent().getSession().setAttribute("name",user.getName());
-            VaadinSession.getCurrent().getSession().setAttribute("avatar",user.getAvatarPath());
-            VaadinSession.getCurrent().getSession().setAttribute("classification",user.getClassLevel());            
+            VaadinSession.getCurrent().setAttribute("id",id);
+            VaadinSession.getCurrent().setAttribute("admin",user.isAdmin());
+            VaadinSession.getCurrent().setAttribute("name",user.getName());
+            VaadinSession.getCurrent().setAttribute("avatar",user.getAvatarPath());
+            VaadinSession.getCurrent().setAttribute("classification",user.getClassLevel());            
             UI.getCurrent().navigate(HomePage.class); 
           }
           else login.setError(true);

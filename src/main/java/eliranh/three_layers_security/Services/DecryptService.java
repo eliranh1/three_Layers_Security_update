@@ -1,15 +1,9 @@
 package eliranh.three_layers_security.Services;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-
 import org.springframework.stereotype.Service;
-import com.vaadin.flow.server.StreamResource;
-
 import eliranh.three_layers_security.Aes.Aes;
 import eliranh.three_layers_security.ChaCha.ChaCha;
 import eliranh.three_layers_security.Classes.Article;
@@ -26,7 +20,7 @@ public class DecryptService
     public interface ProcessNotifyListener
     {
       public void waiting();
-      public void displayFile(String plainText, StreamResource resource);
+      public void displayFile(String plainText, ByteArrayInputStream resource);
     }
 
     public DecryptService()
@@ -36,14 +30,15 @@ public class DecryptService
       this.aes = new Aes(); 
     }
 
-    public void toDecrypt(Article article, ProcessNotifyListener listener) throws IOException
+    public void toDecrypt(Article article, boolean isEdited, ProcessNotifyListener listener) throws IOException
     {
       new Thread(()->{
       listener.waiting();
       plainText = aes.decrypt(article.getProjectData(), article.getKey().getAesKey(), article.getKey().getAesIv());
       byte[] fileBytes = plainText;
 
-      StreamResource resource = new StreamResource("fileBytes",()->new ByteArrayInputStream(fileBytes));
+      
+      ByteArrayInputStream resource = new ByteArrayInputStream(fileBytes);
       try
       {  
         plainText = steg.decrypt(plainText, article.getFileType(), article.getContentLength());

@@ -11,16 +11,29 @@ public class ArticleService
 {
     private ArticleRepository articleRepo;
 
+    public interface LoadAritclesListener
+    {
+      public void finished(ArrayList<Article> articles);
+    }
+
     public ArticleService(ArticleRepository articleRepository)
     {
         this.articleRepo = articleRepository;
     }
 
-    public ArrayList<Article> findProjects(int classLevel)
+    public void findProjects(int classLevel,LoadAritclesListener listener)
     {
-        return (ArrayList<Article>)articleRepo.findAllByClassLevelBetween(0,classLevel+1);
+        Thread thread = new Thread(()->{
+        ArrayList<Article> articles = (ArrayList<Article>)articleRepo.findAllByClassLevelBetween(0,classLevel+1);
+        listener.finished(articles);
+        });
+        thread.start();
     }
 
+    public void updateArticle(Article article)
+    {
+        articleRepo.save(article);
+    }
     public void addProject(Article article)
     {
        articleRepo.insert(article);
